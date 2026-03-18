@@ -3,6 +3,8 @@ using FccuOpsLite.Models.Domain;
 using FccuOpsLite.Seed;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using FccuOpsLite.Services.Implementations;
+using FccuOpsLite.Services.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -37,6 +39,10 @@ builder.Services
     .AddXmlSerializerFormatters();
 
 builder.Services.AddRazorPages();
+
+builder.Services.AddScoped<IMemberService, MemberService>();
+
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
 
 var app = builder.Build();
 
