@@ -1,0 +1,40 @@
+﻿@model FccuOpsLite.Models.ViewModels.UpdateLoanApplicationStatusViewModel
+@using FccuOpsLite.Models.Domain
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Update Application Status";
+}
+
+<h1>Update Application Status</h1>
+
+<form asp-action="UpdateStatus" method="post">
+    <input asp-for="Id" type="hidden" />
+    <input asp-for="CurrentStatus" type="hidden" />
+
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label class="form-label">Current Status</label>
+        <input class="form-control" value="@Model.CurrentStatus" readonly />
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="NewStatus" class="form-label"></label>
+        <select asp-for="NewStatus" asp-items="Html.GetEnumSelectList<LoanApplicationStatus>()" class="form-select"></select>
+        <span asp-validation-for="NewStatus" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Comment" class="form-label"></label>
+        <textarea asp-for="Comment" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Comment" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Update Status</button>
+    <a asp-action="Details" asp-route-id="@Model.Id" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

@@ -1,0 +1,44 @@
+﻿@model FccuOpsLite.Models.ViewModels.LoanApplicationCreateViewModel
+
+@{
+    ViewData["Title"] = "Create Loan Application";
+}
+
+<h1>Create Loan Application</h1>
+
+<form asp-action="Create" method="post">
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+    <div class="mb-3">
+        <label asp-for="MemberId" class="form-label"></label>
+        <select asp-for="MemberId" asp-items="Model.MemberOptions" class="form-select">
+            <option value="">-- Select a member --</option>
+        </select>
+        <span asp-validation-for="MemberId" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="RequestedAmount" class="form-label"></label>
+        <input asp-for="RequestedAmount" class="form-control" />
+        <span asp-validation-for="RequestedAmount" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="LoanType" class="form-label"></label>
+        <input asp-for="LoanType" class="form-control" />
+        <span asp-validation-for="LoanType" class="text-danger"></span>
+    </div>
+
+    <div class="mb-3">
+        <label asp-for="Notes" class="form-label"></label>
+        <textarea asp-for="Notes" class="form-control" rows="4"></textarea>
+        <span asp-validation-for="Notes" class="text-danger"></span>
+    </div>
+
+    <button type="submit" class="btn btn-success">Save Application</button>
+    <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

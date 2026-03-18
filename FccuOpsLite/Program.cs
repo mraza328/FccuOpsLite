@@ -35,14 +35,28 @@ builder.Services
     .AddEntityFrameworkStores<ApplicationDbContext>();
 
 builder.Services
-    .AddControllersWithViews()
+    .AddControllersWithViews(options =>
+    {
+        options.RespectBrowserAcceptHeader = true;
+        options.ReturnHttpNotAcceptable = true;
+    })
     .AddXmlSerializerFormatters();
+
+builder.Services.AddProblemDetails();
 
 builder.Services.AddRazorPages();
 
 builder.Services.AddScoped<IMemberService, MemberService>();
 
 builder.Services.AddScoped<IApplicationService, ApplicationService>();
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("CanReadLoanData", policy =>
+        policy.RequireRole("Admin", "LoanOfficer", "Processor", "Viewer"));
+});
+
+builder.Services.AddScoped<ILoanApiService, LoanApiService>();
 
 var app = builder.Build();
 
@@ -62,6 +76,8 @@ app.UseAuthorization();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
+app.MapControllers();
 
 app.MapRazorPages();
 

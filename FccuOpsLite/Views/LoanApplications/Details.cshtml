@@ -1,0 +1,70 @@
+﻿@model FccuOpsLite.Models.ViewModels.LoanApplicationDetailsViewModel
+
+@{
+    ViewData["Title"] = "Application Details";
+}
+
+<h1>Application Details</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+<div class="card mb-4">
+    <div class="card-body">
+        <h5 class="card-title">Loan Application #@Model.Id</h5>
+        <p><strong>Member Number:</strong> @Model.MemberNumber</p>
+        <p><strong>Member Name:</strong> @Model.MemberName</p>
+        <p><strong>Email:</strong> @Model.MemberEmail</p>
+        <p><strong>Phone:</strong> @Model.MemberPhone</p>
+        <p><strong>Requested Amount:</strong> @Model.RequestedAmount.ToString("C")</p>
+        <p><strong>Loan Type:</strong> @Model.LoanType</p>
+        <p><strong>Status:</strong> @Model.Status</p>
+        <p><strong>Notes:</strong> @Model.Notes</p>
+        <p><strong>Created (UTC):</strong> @Model.CreatedAtUtc</p>
+        <p><strong>Updated (UTC):</strong> @(Model.UpdatedAtUtc?.ToString() ?? "Not updated yet")</p>
+
+        @if (User.IsInRole("Admin") || User.IsInRole("Processor"))
+        {
+            <a asp-action="UpdateStatus" asp-route-id="@Model.Id" class="btn btn-warning">Update Status</a>
+        }
+
+        <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+    </div>
+</div>
+
+<h2>Status History</h2>
+
+@if (Model.StatusHistory.Any())
+{
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Changed At (UTC)</th>
+                <th>Old Status</th>
+                <th>New Status</th>
+                <th>Changed By User ID</th>
+                <th>Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var history in Model.StatusHistory)
+            {
+                <tr>
+                    <td>@history.ChangedAtUtc</td>
+                    <td>@history.OldStatus</td>
+                    <td>@history.NewStatus</td>
+                    <td>@history.ChangedByUserId</td>
+                    <td>@history.Comment</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+else
+{
+    <p>No status history available.</p>
+}

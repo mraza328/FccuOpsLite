@@ -1,0 +1,51 @@
+﻿@model IEnumerable<FccuOpsLite.Models.ViewModels.LoanApplicationListItemViewModel>
+
+@{
+    ViewData["Title"] = "Loan Applications";
+}
+
+<h1>Loan Applications</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("LoanOfficer"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create Loan Application</a>
+    </p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Member Number</th>
+            <th>Member Name</th>
+            <th>Requested Amount</th>
+            <th>Loan Type</th>
+            <th>Status</th>
+            <th>Created (UTC)</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var application in Model)
+        {
+            <tr>
+                <td>@application.MemberNumber</td>
+                <td>@application.MemberName</td>
+                <td>@application.RequestedAmount.ToString("C")</td>
+                <td>@application.LoanType</td>
+                <td>@application.Status</td>
+                <td>@application.CreatedAtUtc</td>
+                <td>
+                    <a asp-action="Details" asp-route-id="@application.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

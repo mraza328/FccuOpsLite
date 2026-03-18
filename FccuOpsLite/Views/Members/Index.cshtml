@@ -1,0 +1,45 @@
+﻿@model IEnumerable<FccuOpsLite.Models.Domain.Member>
+
+@{
+    ViewData["Title"] = "Members";
+}
+
+<h1>Members</h1>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">
+        @TempData["SuccessMessage"]
+    </div>
+}
+
+@if (User.IsInRole("Admin") || User.IsInRole("LoanOfficer"))
+{
+    <p>
+        <a asp-action="Create" class="btn btn-primary">Create Member</a>
+    </p>
+}
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Member Number</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Created (UTC)</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var member in Model)
+        {
+            <tr>
+                <td>@member.MemberNumber</td>
+                <td>@member.FirstName @member.LastName</td>
+                <td>@member.Email</td>
+                <td>@member.Phone</td>
+                <td>@member.CreatedAtUtc</td>
+            </tr>
+        }
+    </tbody>
+</table>
