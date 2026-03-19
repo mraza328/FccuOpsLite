@@ -125,15 +125,3 @@ Example endpoints include:
 3. `/api/loanapplications/export/{id}`
 
 The API supports both JSON and XML responses.
-
-## Getting Started
-
-### Prerequisites
-
-1. Visual Studio 2026
-
-2. .NET 9 SDK
-
-3. MySQL Server
-
-4. Azure account for deployment
