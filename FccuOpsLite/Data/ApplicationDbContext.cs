@@ -26,6 +26,16 @@ namespace FccuOpsLite.Data
             builder.Entity<LoanApplication>()
                 .Property(l => l.Status)
                 .HasConversion<string>();
+
+            builder.Entity<ApplicationUser>()
+                .HasOne(u => u.Member)
+                .WithOne()
+                .HasForeignKey<ApplicationUser>(u => u.MemberId)
+                .OnDelete(DeleteBehavior.SetNull);
+
+            builder.Entity<ApplicationUser>()
+                .HasIndex(u => u.MemberId)
+                .IsUnique();
         }
     }
 }

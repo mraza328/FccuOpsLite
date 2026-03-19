@@ -15,7 +15,8 @@ namespace FccuOpsLite.Seed
                 "Admin",
                 "LoanOfficer",
                 "Processor",
-                "Viewer"
+                "Viewer",
+                "Member"
             };
 
             foreach (var role in roles)
