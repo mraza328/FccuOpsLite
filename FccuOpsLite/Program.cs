@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using FccuOpsLite.Services.Implementations;
 using FccuOpsLite.Services.Interfaces;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -39,6 +41,7 @@ builder.Services
     {
         options.RespectBrowserAcceptHeader = true;
         options.ReturnHttpNotAcceptable = true;
+        options.Filters.Add(new AutoValidateAntiforgeryTokenAttribute());
     })
     .AddXmlSerializerFormatters();
 
@@ -54,6 +57,19 @@ builder.Services.AddAuthorization(options =>
 {
     options.AddPolicy("CanReadLoanData", policy =>
         policy.RequireRole("Admin", "LoanOfficer", "Processor", "Viewer"));
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
+    options.Cookie.SameSite = SameSiteMode.Lax;
+
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    options.SlidingExpiration = true;
+
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
 });
 
 builder.Services.AddScoped<ILoanApiService, LoanApiService>();
@@ -84,7 +100,7 @@ app.MapRazorPages();
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-    await DbSeeder.SeedRolesAndAdminAsync(services);
+    await DbSeeder.SeedRolesAndAdminAsync(services, app.Configuration);
 }
 
 app.Run();

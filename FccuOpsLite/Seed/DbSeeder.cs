@@ -5,7 +5,7 @@ namespace FccuOpsLite.Seed
 {
     public static class DbSeeder
     {
-        public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider)
+        public static async Task SeedRolesAndAdminAsync(IServiceProvider serviceProvider, IConfiguration configuration)
         {
             var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
             var userManager = serviceProvider.GetRequiredService<UserManager<ApplicationUser>>();
@@ -26,7 +26,24 @@ namespace FccuOpsLite.Seed
                 }
             }
 
-            var adminEmail = "admin@fccuopslite.local";
+            var bootstrapEnabledRaw = configuration["BootstrapAdmin:Enabled"];
+            var bootstrapEnabled = bool.TryParse(bootstrapEnabledRaw, out var enabled) && enabled;
+
+            if (!bootstrapEnabled)
+            {
+                return;
+            }
+
+            var adminEmail = configuration["BootstrapAdmin:Email"];
+            var adminPassword = configuration["BootstrapAdmin:Password"];
+            var adminDisplayName = configuration["BootstrapAdmin:DisplayName"] ?? "System Admin";
+
+            if (string.IsNullOrWhiteSpace(adminEmail) || string.IsNullOrWhiteSpace(adminPassword))
+            {
+                throw new InvalidOperationException(
+                    "Bootstrap admin is enabled, but BootstrapAdmin:Email or BootstrapAdmin:Password is missing.");
+            }
+
             var adminUser = await userManager.FindByEmailAsync(adminEmail);
 
             if (adminUser == null)
@@ -35,11 +52,11 @@ namespace FccuOpsLite.Seed
                 {
                     UserName = adminEmail,
                     Email = adminEmail,
-                    DisplayName = "System Admin",
+                    DisplayName = adminDisplayName,
                     EmailConfirmed = true
                 };
 
-                var result = await userManager.CreateAsync(adminUser, "TempAdmin123!ChangeMe");
+                var result = await userManager.CreateAsync(adminUser, adminPassword);
 
                 if (!result.Succeeded)
                 {
