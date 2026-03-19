@@ -97,10 +97,10 @@ app.MapControllers();
 
 app.MapRazorPages();
 
-using (var scope = app.Services.CreateScope())
+/*using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
     await DbSeeder.SeedRolesAndAdminAsync(services, app.Configuration);
-}
+}*/
 
 app.Run();
